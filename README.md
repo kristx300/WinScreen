@@ -11,4 +11,4 @@ Test project
 5. Add to STARTUP
 
 # References
-[x][Json.Net](http://www.newtonsoft.com/json)
+-[Json.Net](http://www.newtonsoft.com/json)
