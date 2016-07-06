@@ -15,21 +15,23 @@ namespace WinScreen
         public UrlDialog()
         {
             InitializeComponent();
-            _web = new WebClient();
-            _web.DownloadProgressChanged += Wc_DownloadProgressChanged;
-            _web.DownloadFileCompleted += Wc_DownloadFileCompleted;
         }
 
         private void EnterButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(UrlText.Text) || !UrlText.Text.Contains(new char[] { '@','.' }))
+            Create();
+
+            if (string.IsNullOrWhiteSpace(UrlText.Text) || !UrlText.Text.Contains(new char[] { '@', '.' }))
                 MessageBox.Show("It's not URL link");
+
             Path = DataWorker.ImagePath + @"\" + UrlText.Text.GetLastPartLink();
+
             if (File.Exists(Path))
             {
                 var key = Path.GetDotPart();
                 Path = Path.Replace(key, "Copy." + key);
             }
+
             _web.DownloadFileAsync(new Uri(UrlText.Text), Path);
             DownloadBar.Visible = Cancel.Visible = true;
         }
@@ -60,7 +62,16 @@ namespace WinScreen
         {
             _web.CancelAsync();
             _web.Dispose();
-            _web = new WebClient();
+        }
+
+        private void Create()
+        {
+            if (_web == null)
+            {
+                _web = new WebClient();
+                _web.DownloadProgressChanged += Wc_DownloadProgressChanged;
+                _web.DownloadFileCompleted += Wc_DownloadFileCompleted;
+            }
         }
     }
 }

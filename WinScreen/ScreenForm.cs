@@ -30,11 +30,13 @@ namespace WinScreen
             IListBox.Items.AddRange(PhotoList.GetData());
 
             ResX.Text = "Width " + Screen.PrimaryScreen.Bounds.Width.ToString() + " Height " + Screen.PrimaryScreen.Bounds.Height.ToString();
+
             if (SettingList.TimeType != TimeUnit.None)
             {
                 NumericTime.Value = SettingList.Time;
                 TimeUnitBox.SelectedItem = SettingList.TimeType.ToString();
             }
+
             switch (SettingList.TypeImage)
             {
                 case ImageType.Tiled:
@@ -55,6 +57,7 @@ namespace WinScreen
             RandomBox.Checked = SettingList.Random;
             SaveImages.Checked = SettingList.SaveImage;
             StartUpApplication.Checked = SettingList.StartUpApplication;
+
             if (SettingList.StartUpApplication && SettingList.StartUpProgram)
                 Start();
         }
@@ -102,6 +105,7 @@ namespace WinScreen
                         localPath = DataWorker.Copy(item);
                     else
                         localPath = item;
+
                     PhotoList.Add(localPath);
                     IListBox.Items.Add(localPath.GetLastPart());
                     Slider.BackgroundImage = Image.FromFile(localPath);
@@ -113,6 +117,7 @@ namespace WinScreen
         {
             indexer = IListBox.SelectedIndex == -1 ? 0 : IListBox.SelectedIndex;
             string locale = PhotoList.File(IListBox.Items[indexer].ToString());
+
             if (!string.IsNullOrWhiteSpace(locale))
                 Slider.BackgroundImage = Image.FromFile(locale);
         }
@@ -121,10 +126,9 @@ namespace WinScreen
         {
             string path = "";
             using (var uD = new UrlDialog())
-            {
                 if (uD.ShowDialog(this) == DialogResult.OK)
                     path = uD.Path;
-            }
+
             if (!string.IsNullOrWhiteSpace(path))
             {
                 PhotoList.Add(path);
@@ -136,6 +140,7 @@ namespace WinScreen
         private void UpdateWindow_Click(object sender, EventArgs e)
         {
             var path = PhotoList.GetCurrentPath();
+
             if (!string.IsNullOrWhiteSpace(path))
                 Native.SetWindow(path, SettingList.TypeImage);
         }
@@ -144,14 +149,13 @@ namespace WinScreen
         {
             var removes = PhotoList.Remove();
             foreach (var item in removes)
-            {
                 IListBox.Items.Remove(item);
-            }
         }
 
         private void IListBox_DoubleClick(object sender, EventArgs e)
         {
             var path = PhotoList.GetCurrentPath();
+
             if (!string.IsNullOrWhiteSpace(path))
                 Process.Start(path);
         }
@@ -167,6 +171,7 @@ namespace WinScreen
                 MessageBox.Show("Sorry but haven't images");
                 return;
             }
+
             switch (SettingList.TimeType)
             {
                 case TimeUnit.Second:
@@ -186,6 +191,7 @@ namespace WinScreen
                 default:
                     break;
             }
+
             if (StartUpProgramm.Text == "Start Up")
             {
                 Start();
@@ -222,21 +228,27 @@ namespace WinScreen
         private void Next()
         {
             string valueSet = "";
+
             if (SettingList.Random)
                 valueSet = PhotoList.Random();
             else
                 valueSet = PhotoList.Photo();
+
             var index = IListBox.Items.IndexOf(valueSet.GetLastPart());
+
             if (index != -1)
                 IListBox.SelectedItem = IListBox.Items[index];
+
             Native.SetWindow(valueSet, SettingList.TypeImage);
         }
 
         private void Previous()
         {
             var index = IListBox.Items.IndexOf(PhotoList.Previous().GetLastPart());
+
             if (index != -1)
                 IListBox.SelectedItem = IListBox.Items[index];
+
             Native.SetWindow(PhotoList.Previous(), SettingList.TypeImage);
         }
 
@@ -247,11 +259,13 @@ namespace WinScreen
         private void INotifyContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             Debug.WriteLine(e.ClickedItem.Text);
+
             if (PhotoList.Count == 0)
             {
                 MessageBox.Show("Sorry but haven't images");
                 return;
             }
+
             switch (e.ClickedItem.Text)
             {
                 case "Start":
@@ -324,9 +338,7 @@ namespace WinScreen
         private void AboutUs_Click(object sender, EventArgs e)
         {
             using (var a = new AboutUs())
-            {
                 a.ShowDialog();
-            }
         }
 
         private void radioButton6_CheckedChanged(object sender, EventArgs e)
@@ -364,11 +376,13 @@ namespace WinScreen
         private void RunStart_CheckedChanged(object sender, EventArgs e)
         {
             SettingList.StartUpApplication = StartUpApplication.Checked;
+
             if (StartUpApplication.Checked)
-                Native.SetStartUpState(StartUpState.Add);
+                Native.Create().SetStartUpState(StartUpState.Add);
             else
-                Native.SetStartUpState(StartUpState.Delete);
+                Native.Create().SetStartUpState(StartUpState.Delete);
         }
+
         private void NextS_Click(object sender, EventArgs e)
         {
             Next();

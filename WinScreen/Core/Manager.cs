@@ -9,6 +9,7 @@
         {
             _path = SetPath();
             var locale = DataWorker.Deserialize(_path, typeof(T));
+
             if (locale is T && locale != null)
                 Ject = locale as T;
             else

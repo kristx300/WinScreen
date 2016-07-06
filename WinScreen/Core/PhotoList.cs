@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace WinScreen.Core
 {
-    public class PhotoList : Manager<List<string>>
+    public class PhotoList : Manager<List<string>>, IDisposable
     {
         private Random Randomize = new Random();
 
@@ -19,6 +19,9 @@ namespace WinScreen.Core
             {
                 return Ject.Count;
             }
+            private set
+            {
+            }
         }
         private int CurrentIndex { get; set; } = 0;
         private int Prev { get; set; } = 0;
@@ -27,7 +30,6 @@ namespace WinScreen.Core
         {
             Ject.Add(path);
             CurrentIndex = Ject.FindIndex(x => x == path);
-            Save();
         }
 
         public string GetCurrentPath()
@@ -51,10 +53,12 @@ namespace WinScreen.Core
         {
             Prev = CurrentIndex;
             var locale = Ject[CurrentIndex];
+
             if (CurrentIndex + 1 == Count)
                 CurrentIndex = 0;
             else
                 CurrentIndex++;
+
             return locale;
         }
 
@@ -74,14 +78,12 @@ namespace WinScreen.Core
         public void Remove(string path)
         {
             Ject.RemoveAt(Ject.FindIndex(x => x.Contains(path)));
-            Save();
         }
 
         public string[] Remove()
         {
             var rem = Ject.Where(x => x.Contains("Copy")).ToArray();
             Ject.RemoveAll(x => x.Contains("Copy"));
-            Save();
             return rem;
         }
 
@@ -93,6 +95,11 @@ namespace WinScreen.Core
         protected override string SetPath()
         {
             return Environment.CurrentDirectory + @"\pset.json";
+        }
+
+        public void Dispose()
+        {
+            Save();
         }
     }
 }

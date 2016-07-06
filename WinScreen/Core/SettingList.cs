@@ -2,7 +2,7 @@
 
 namespace WinScreen.Core
 {
-    public class SettingList : Manager<Setting>
+    public class SettingList : Manager<Setting>, IDisposable
     {
         public SettingList()
         {
@@ -18,7 +18,6 @@ namespace WinScreen.Core
             set
             {
                 Ject.Random = value;
-                Save();
             }
         }
 
@@ -31,7 +30,6 @@ namespace WinScreen.Core
             set
             {
                 Ject.Save = value;
-                Save();
             }
         }
 
@@ -44,7 +42,6 @@ namespace WinScreen.Core
             set
             {
                 Ject.Time.First = value;
-                Save();
             }
         }
 
@@ -57,7 +54,6 @@ namespace WinScreen.Core
             set
             {
                 Ject.Time.Second = value;
-                Save();
             }
         }
 
@@ -70,7 +66,6 @@ namespace WinScreen.Core
             set
             {
                 Ject.Type = value;
-                Save();
             }
         }
         public bool StartUpApplication
@@ -95,6 +90,7 @@ namespace WinScreen.Core
                 Ject.StartUpProgram = value;
             }
         }
+
         protected override void Ctor()
         {
             Ject = new Setting();
@@ -103,6 +99,11 @@ namespace WinScreen.Core
         protected override string SetPath()
         {
             return Environment.CurrentDirectory + @"\setting.json";
+        }
+
+        public void Dispose()
+        {
+            Save();
         }
     }
 }

@@ -17,10 +17,9 @@ namespace WinScreen.Core
         public static bool Contains(this string str, char[] values)
         {
             for (int i = 0; i < values.Length; i++)
-            {
                 if (str.Contains(values[i]))
                     return true;
-            }
+
             return false;
         }
 

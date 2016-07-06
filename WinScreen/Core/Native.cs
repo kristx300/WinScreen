@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -9,21 +10,11 @@ namespace WinScreen.Core
         private const int SPI_SETDESKWALLPAPER = 20;
         private const int SPIF_SENDWININICHANGE = 0x02;
         private const int SPIF_UPDATEINIFILE = 0x01;
-        private static RegistryKey RK = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
-        public static bool GetStartUpState()
+        public static StartUpReg Create()
         {
-            return RK.GetValue("WinScreen") == null;
+            return StartUpReg.GetInstance();
         }
-
-        public static void SetStartUpState(StartUpState ss)
-        {
-            if (ss == StartUpState.Add)
-                RK.SetValue("WinScreen", Application.ExecutablePath);
-            else if (ss == StartUpState.Delete)
-                RK.DeleteValue("WinScreen", false);
-        }
-
         public static void SetWindow(string path, ImageType style)
         {
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
@@ -52,6 +43,51 @@ namespace WinScreen.Core
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
+
+        public class StartUpReg : IDisposable
+        {
+            private static StartUpReg Rk { get; set; }
+            private static object syncRoot = new Object();
+
+            private StartUpReg()
+            {
+            }
+
+            private RegistryKey RK = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+            public void Dispose()
+            {
+                RK.Dispose();
+            }
+
+            public bool GetStartUpState()
+            {
+                return RK.GetValue("WinScreen") == null;
+            }
+
+            public void SetStartUpState(StartUpState ss)
+            {
+                if (ss == StartUpState.Add)
+                    RK.SetValue("WinScreen", Application.ExecutablePath);
+                else if (ss == StartUpState.Delete)
+                    RK.DeleteValue("WinScreen", false);
+            }
+
+            public static StartUpReg GetInstance()
+            {
+                if (Rk == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (Rk == null)
+                        {
+                            Rk = new StartUpReg();
+                        }
+                    }
+                }
+                return Rk;
+            }
+        }
     }
 
     public enum StartUpState

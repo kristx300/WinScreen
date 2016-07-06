@@ -12,12 +12,15 @@ namespace WinScreen.Core
         {
             if (!Directory.Exists(ImagePath))
                 Directory.CreateDirectory(ImagePath);
+
             var to = ImagePath + @"\" + from.GetLastPart();
+
             if (File.Exists(to))
             {
                 var key = to.GetDotPart();
                 to = to.Replace(key, "Copy." + key);
             }
+
             File.Copy(from, to, true);
             return to;
         }
