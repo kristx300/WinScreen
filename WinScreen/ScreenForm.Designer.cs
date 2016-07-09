@@ -17,6 +17,10 @@
             {
                 components.Dispose();
             }
+            foreach (var item in Containers)
+            {
+                item.Save(true);
+            }
             base.Dispose(disposing);
         }
 
@@ -253,7 +257,7 @@
             this.IListBox.Name = "IListBox";
             this.IListBox.Size = new System.Drawing.Size(351, 95);
             this.IListBox.TabIndex = 38;
-            this.IListBox.SelectedValueChanged += new System.EventHandler(this.IListBox_SelectedValueChanged);
+            this.IListBox.SelectedIndexChanged += new System.EventHandler(this.IListBox_SelectedIndexChanged);
             this.IListBox.DoubleClick += new System.EventHandler(this.IListBox_DoubleClick);
             // 
             // RemoveImage

@@ -2,7 +2,7 @@
 
 namespace WinScreen.Core
 {
-    public class SettingList : Manager<Setting>, IDisposable
+    public class SettingList : Manager<Setting>, ISavable
     {
         public SettingList()
         {
@@ -101,9 +101,10 @@ namespace WinScreen.Core
             return Environment.CurrentDirectory + @"\setting.json";
         }
 
-        public void Dispose()
+        public void Save(bool s)
         {
-            Save();
+            if(s)
+                Save();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
@@ -13,6 +14,7 @@ namespace WinScreen
         private PhotoList PhotoList { get; set; } = new PhotoList();
         private SettingList SettingList { get; set; } = new SettingList();
         private int indexer = 0;
+        private IEnumerable<ISavable> Containers { get; set; }
 
         #endregion Variable
 
@@ -59,7 +61,11 @@ namespace WinScreen
             StartUpApplication.Checked = SettingList.StartUpApplication;
 
             if (SettingList.StartUpApplication && SettingList.StartUpProgram)
+            {
                 Start();
+                WindowState = FormWindowState.Minimized;
+            }
+            Containers = new ISavable[] { PhotoList, SettingList };
         }
 
         private void ScreenForm_Resize(object sender, EventArgs e)
@@ -78,19 +84,23 @@ namespace WinScreen
 
         private void SliderLeft_Click(object sender, EventArgs e)
         {
-            if (indexer != 0 && indexer != -1)
+            if (indexer > 0 && 0 != IListBox.Items.Count)
                 IListBox.SelectedItem = IListBox.Items[indexer - 1];
         }
 
         private void RemoveImage_Click(object sender, EventArgs e)
         {
-            PhotoList.Remove(IListBox.Items[indexer].ToString());
-            IListBox.Items.Remove(IListBox.Items[indexer].ToString());
+            if (IListBox.Items.Count != 0)
+            {
+                PhotoList.Remove(IListBox.Items[indexer].ToString());
+                IListBox.Items.Remove(IListBox.Items[indexer].ToString());
+                indexer = 0;
+            }
         }
 
         private void SliderRight_Click(object sender, EventArgs e)
         {
-            if (indexer + 1 != IListBox.Items.Count && indexer != -1)
+            if (0 != IListBox.Items.Count && indexer < IListBox.Items.Count - 1)
                 IListBox.SelectedItem = IListBox.Items[indexer + 1];
         }
 
@@ -113,7 +123,7 @@ namespace WinScreen
             }
         }
 
-        private void IListBox_SelectedValueChanged(object sender, EventArgs e)
+        private void IListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             indexer = IListBox.SelectedIndex == -1 ? 0 : IListBox.SelectedIndex;
             string locale = PhotoList.File(IListBox.Items[indexer].ToString());

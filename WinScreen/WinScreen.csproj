@@ -76,6 +76,7 @@
     <Compile Include="AboutUs.Designer.cs">
       <DependentUpon>AboutUs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\ISavable.cs" />
     <Compile Include="Models\AnalogTuple.cs" />
     <Compile Include="Core\Data.cs" />
     <Compile Include="Core\Manager.cs" />

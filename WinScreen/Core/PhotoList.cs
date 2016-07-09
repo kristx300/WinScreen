@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace WinScreen.Core
 {
-    public class PhotoList : Manager<List<string>>, IDisposable
+    public class PhotoList : Manager<List<string>>, ISavable
     {
         private Random Randomize = new Random();
 
@@ -97,9 +97,10 @@ namespace WinScreen.Core
             return Environment.CurrentDirectory + @"\pset.json";
         }
 
-        public void Dispose()
+        public void Save(bool s)
         {
-            Save();
+            if (s)
+                Save();
         }
     }
 }
