@@ -17,10 +17,6 @@
             {
                 components.Dispose();
             }
-            foreach (var item in Containers)
-            {
-                item.Save(true);
-            }
             base.Dispose(disposing);
         }
 
@@ -462,6 +458,7 @@
             this.Name = "ScreenForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WinScreen";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScreenForm_FormClosing);
             this.Resize += new System.EventHandler(this.ScreenForm_Resize);
             this.INotifyContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.NumericTime)).EndInit();

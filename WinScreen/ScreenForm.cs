@@ -11,9 +11,22 @@ namespace WinScreen
     {
         #region Variable
 
+        /// <summary>
+        /// List which contains information about images
+        /// </summary>
         private PhotoList PhotoList { get; set; } = new PhotoList();
+        /// <summary>
+        /// List wich contains information about settings
+        /// </summary>
         private SettingList SettingList { get; set; } = new SettingList();
+        /// <summary>
+        /// Variable for tracking index of ListBox
+        /// </summary>
         private int indexer = 0;
+
+        /// <summary>
+        /// Tracking closing form and save objects to JSON file
+        /// </summary>
         private IEnumerable<ISavable> Containers { get; set; }
 
         #endregion Variable
@@ -27,6 +40,9 @@ namespace WinScreen
             InitializeForm();
         }
 
+        /// <summary>
+        /// Initializes locale property and other settings
+        /// </summary>
         public void InitializeForm()
         {
             IListBox.Items.AddRange(PhotoList.GetData());
@@ -68,6 +84,11 @@ namespace WinScreen
             Containers = new ISavable[] { PhotoList, SettingList };
         }
 
+        /// <summary>
+        /// Tracking form resize for Windows State and change NotifyIcon visible
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ScreenForm_Resize(object sender, EventArgs e)
         {
             if (WindowState == FormWindowState.Minimized)
@@ -78,16 +99,39 @@ namespace WinScreen
             }
         }
 
+        /// <summary>
+        /// Save object to JSON file when form closing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ScreenForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            foreach (var item in Containers)
+            {
+                item?.Save(true);
+            }
+        }
+
         #endregion Form
 
         #region Slider
 
+        /// <summary>
+        /// Change current image in Panel and ListBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SliderLeft_Click(object sender, EventArgs e)
         {
             if (indexer > 0 && 0 != IListBox.Items.Count)
                 IListBox.SelectedItem = IListBox.Items[indexer - 1];
         }
 
+        /// <summary>
+        /// Remove Image from ListBox and PhotoList
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RemoveImage_Click(object sender, EventArgs e)
         {
             if (IListBox.Items.Count != 0)
@@ -98,11 +142,23 @@ namespace WinScreen
             }
         }
 
+        /// <summary>
+        /// Change current image in Panel and ListBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
         private void SliderRight_Click(object sender, EventArgs e)
         {
             if (0 != IListBox.Items.Count && indexer < IListBox.Items.Count - 1)
                 IListBox.SelectedItem = IListBox.Items[indexer + 1];
         }
+
+        /// <summary>
+        /// Add image from call OpenFileDialog to PhotoList,ListBox and puts current picture in Panel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 
         private void AddImage_Click(object sender, EventArgs e)
         {
@@ -123,6 +179,11 @@ namespace WinScreen
             }
         }
 
+        /// <summary>
+        /// If SelectedIndexChanged current image in Panel is changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             indexer = IListBox.SelectedIndex == -1 ? 0 : IListBox.SelectedIndex;
@@ -132,6 +193,11 @@ namespace WinScreen
                 Slider.BackgroundImage = Image.FromFile(locale);
         }
 
+        /// <summary>
+        /// Add image from call UriDialog to PhotoList,ListBox and puts current picture in Panel
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddImageURL_Click(object sender, EventArgs e)
         {
             string path = "";
@@ -147,6 +213,11 @@ namespace WinScreen
             }
         }
 
+        /// <summary>
+        /// Changed current windows background
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void UpdateWindow_Click(object sender, EventArgs e)
         {
             var path = PhotoList.GetCurrentPath();
@@ -155,6 +226,11 @@ namespace WinScreen
                 Native.SetWindow(path, SettingList.TypeImage);
         }
 
+        /// <summary>
+        /// Remove duplicate image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DelCopy_Click(object sender, EventArgs e)
         {
             var removes = PhotoList.Remove();
@@ -162,6 +238,11 @@ namespace WinScreen
                 IListBox.Items.Remove(item);
         }
 
+        /// <summary>
+        /// Open image in any programm
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void IListBox_DoubleClick(object sender, EventArgs e)
         {
             var path = PhotoList.GetCurrentPath();
@@ -174,6 +255,11 @@ namespace WinScreen
 
         #region Timer
 
+        /// <summary>
+        /// Call Start()
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartUp_Click(object sender, EventArgs e)
         {
             if (PhotoList.Count == 0)
@@ -212,6 +298,11 @@ namespace WinScreen
             }
         }
 
+        /// <summary>
+        /// Main loop/ticker
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainTimer_Tick(object sender, EventArgs e)
         {
             Next();
@@ -221,6 +312,9 @@ namespace WinScreen
 
         #region NotifyCommands
 
+        /// <summary>
+        /// Start program changer image
+        /// </summary>
         private void Start()
         {
             MainTimer.Start();
@@ -228,6 +322,9 @@ namespace WinScreen
             SettingList.StartUpProgram = true;
         }
 
+        /// <summary>
+        /// Stop program changer image
+        /// </summary>
         private void Stop()
         {
             MainTimer.Stop();
@@ -235,6 +332,9 @@ namespace WinScreen
             SettingList.StartUpProgram = false;
         }
 
+        /// <summary>
+        /// Change image of the following
+        /// </summary>
         private void Next()
         {
             string valueSet = "";
@@ -252,6 +352,9 @@ namespace WinScreen
             Native.SetWindow(valueSet, SettingList.TypeImage);
         }
 
+        /// <summary>
+        /// Change image of the previous
+        /// </summary>
         private void Previous()
         {
             var index = IListBox.Items.IndexOf(PhotoList.Previous().GetLastPart());
@@ -266,10 +369,13 @@ namespace WinScreen
 
         #region INotify
 
+        /// <summary>
+        /// Called this method when user clicked on Item of Content Menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void INotifyContextMenu_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            Debug.WriteLine(e.ClickedItem.Text);
-
             if (PhotoList.Count == 0)
             {
                 MessageBox.Show("Sorry but haven't images");
@@ -307,6 +413,11 @@ namespace WinScreen
             }
         }
 
+        /// <summary>
+        /// Called when user doing double click to showing form and hide NotifyIcon
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void INotify_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             WindowState = FormWindowState.Normal;

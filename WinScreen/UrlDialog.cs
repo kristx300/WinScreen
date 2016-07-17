@@ -10,6 +10,9 @@ namespace WinScreen
 {
     public partial class UrlDialog : Form
     {
+        /// <summary>
+        /// The main object for manipulation of web requests
+        /// </summary>
         private WebClient _web { get; set; }
 
         public UrlDialog()
@@ -17,6 +20,11 @@ namespace WinScreen
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Start web request
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EnterButton_Click(object sender, EventArgs e)
         {
             Create();
@@ -36,6 +44,11 @@ namespace WinScreen
             DownloadBar.Visible = Cancel.Visible = true;
         }
 
+        /// <summary>
+        /// Called when web request completes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Wc_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled)
@@ -51,19 +64,35 @@ namespace WinScreen
             }
         }
 
+        /// <summary>
+        /// Progress changer of web request state
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             DownloadBar.Value = e.ProgressPercentage;
         }
 
+        /// <summary>
+        /// Image Path add to main <seealso cref="ScreenForm"/>
+        /// </summary>
         public string Path { get; set; }
 
+        /// <summary>
+        /// Called when user click on Cancel Button to break web request
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Cancel_Click(object sender, EventArgs e)
         {
             _web.CancelAsync();
             _web.Dispose();
         }
 
+        /// <summary>
+        /// Initializes web client if it is disposed
+        /// </summary>
         private void Create()
         {
             if (_web == null)

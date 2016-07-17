@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinScreen.Core
+﻿namespace WinScreen.Core
 {
-    interface ISavable
+    /// <summary>
+    /// Save other objects which release that interface
+    /// </summary>
+    internal interface ISavable
     {
         void Save(bool s);
     }

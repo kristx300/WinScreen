@@ -7,14 +7,25 @@ namespace WinScreen.Core
 {
     public class Native
     {
+        /// <summary>
+        /// Const for set Windows background
+        /// </summary>
         private const int SPI_SETDESKWALLPAPER = 20;
         private const int SPIF_SENDWININICHANGE = 0x02;
         private const int SPIF_UPDATEINIFILE = 0x01;
-
+        /// <summary>
+        /// Constructor for StartUpReg 
+        /// </summary>
+        /// <returns>StartUpReg for add program to STARTUP</returns>
         public static StartUpReg Create()
         {
             return StartUpReg.GetInstance();
         }
+        /// <summary>
+        /// Change Windows background image
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="style"></param>
         public static void SetWindow(string path, ImageType style)
         {
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
@@ -43,7 +54,6 @@ namespace WinScreen.Core
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
-
         public class StartUpReg : IDisposable
         {
             private static StartUpReg Rk { get; set; }
@@ -89,7 +99,9 @@ namespace WinScreen.Core
             }
         }
     }
-
+    /// <summary>
+    /// Start up state can be "Add" or "Delete"
+    /// </summary>
     public enum StartUpState
     {
         Add,
