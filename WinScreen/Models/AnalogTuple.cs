@@ -1,5 +1,10 @@
 ﻿namespace WinScreen.Core
 {
+    /// <summary>
+    /// Analog tuple with open properties
+    /// </summary>
+    /// <typeparam name="T1">Object or struct</typeparam>
+    /// <typeparam name="T2">Object or struct</typeparam>
     public class AnalogTuple<T1, T2>
     {
         public AnalogTuple()

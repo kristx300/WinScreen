@@ -103,7 +103,7 @@ namespace WinScreen.Core
 
         public void Save(bool s)
         {
-            if(s)
+            if (s)
                 Save();
         }
     }
