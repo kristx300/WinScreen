@@ -12,4 +12,4 @@ Test project for my future work as example my experience
 - [ ] Add tracker for type file from web
 
 # References
--[Json.Net](http://www.newtonsoft.com/json)
+- [Json.Net](http://www.newtonsoft.com/json)
